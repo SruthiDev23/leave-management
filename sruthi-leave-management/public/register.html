@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Registration - Sruthi Leave Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-wrapper">
+
+  <div class="auth-card" style="max-width: 540px;">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <i class="fas fa-user-plus"></i>
+      </div>
+      <h2>Employee Registration</h2>
+      <p>Create an employee account to start applying for leaves</p>
+    </div>
+
+    <!-- Alert placeholder -->
+    <div id="alertBox" style="display: none;"></div>
+
+    <!-- Registration Form -->
+    <form id="registerForm">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label" for="employee_id">
+            Employee ID <span class="required">*</span>
+          </label>
+          <div class="search-input-wrapper">
+            <i class="fas fa-id-card"></i>
+            <input 
+              type="text" 
+              id="employee_id" 
+              class="form-control" 
+              placeholder="e.g. EMP105" 
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="department">
+            Department
+          </label>
+          <select id="department" class="form-control">
+            <option value="Engineering">Engineering</option>
+            <option value="Design">Design</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Human Resources">Human Resources</option>
+            <option value="Finance">Finance</option>
+            <option value="Operations">Operations</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="name">
+          Full Name <span class="required">*</span>
+        </label>
+        <div class="search-input-wrapper">
+          <i class="fas fa-user"></i>
+          <input 
+            type="text" 
+            id="name" 
+            class="form-control" 
+            placeholder="e.g. Ananya Reddy" 
+            required
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">
+          Corporate Email Address <span class="required">*</span>
+        </label>
+        <div class="search-input-wrapper">
+          <i class="fas fa-envelope"></i>
+          <input 
+            type="email" 
+            id="email" 
+            class="form-control" 
+            placeholder="e.g. ananya@sruthi.com" 
+            required
+          >
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label" for="password">
+            Password <span class="required">*</span>
+          </label>
+          <div class="search-input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input 
+              type="password" 
+              id="password" 
+              class="form-control" 
+              placeholder="Min. 4 characters" 
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirm_password">
+            Confirm Password <span class="required">*</span>
+          </label>
+          <div class="search-input-wrapper">
+            <i class="fas fa-check-circle"></i>
+            <input 
+              type="password" 
+              id="confirm_password" 
+              class="form-control" 
+              placeholder="Repeat password" 
+              required
+            >
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="registerBtn" style="width: 100%; margin-top: 0.5rem; padding: 0.8rem;">
+        <i class="fas fa-user-check"></i> Register Account
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a href="employee-login.html">Sign In here</a></p>
+      <p style="margin-top: 10px;">
+        <a href="index.html" style="color: var(--text-muted);"><i class="fas fa-arrow-left"></i> Back to Home</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    Auth.redirectIfAuthenticated();
+
+    const form = document.getElementById('registerForm');
+    const alertBox = document.getElementById('alertBox');
+    const registerBtn = document.getElementById('registerBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.style.display = 'none';
+
+      const employee_id = document.getElementById('employee_id').value.trim();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const department = document.getElementById('department').value;
+      const password = document.getElementById('password').value;
+      const confirm_password = document.getElementById('confirm_password').value;
+
+      if (!employee_id || !name || !email || !password) {
+        showAlert('Please fill in all mandatory fields.', 'danger');
+        return;
+      }
+
+      if (password !== confirm_password) {
+        showAlert('Passwords do not match. Please re-enter identical passwords.', 'danger');
+        return;
+      }
+
+      if (password.length < 4) {
+        showAlert('Password must be at least 4 characters long.', 'danger');
+        return;
+      }
+
+      registerBtn.disabled = true;
+      registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ employee_id, name, email, department, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          Auth.setSession(data.token, data.user);
+          showAlert('Registration successful! Redirecting to your dashboard...', 'success');
+          showToast('Account created successfully!', 'success');
+
+          setTimeout(() => {
+            window.location.href = 'employee-dashboard.html';
+          }, 1000);
+        } else {
+          showAlert(data.message || 'Registration failed. Please try again.', 'danger');
+          registerBtn.disabled = false;
+          registerBtn.innerHTML = '<i class="fas fa-user-check"></i> Register Account';
+        }
+      } catch (err) {
+        showAlert('Server connection failed. Please ensure backend is running.', 'danger');
+        registerBtn.disabled = false;
+        registerBtn.innerHTML = '<i class="fas fa-user-check"></i> Register Account';
+      }
+    });
+
+    function showAlert(message, type) {
+      alertBox.className = `alert alert-${type}`;
+      alertBox.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> <div>${message}</div>`;
+      alertBox.style.display = 'flex';
+    }
+  </script>
+</body>
+</html>

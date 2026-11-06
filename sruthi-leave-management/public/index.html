@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sruthi Leave Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="index.html" class="brand-wrapper">
+      <div class="brand-icon">
+        <i class="fas fa-calendar-check"></i>
+      </div>
+      <div class="brand-text">
+        <h1>Sruthi Leave Management</h1>
+        <p>Enterprise Employee Portal</p>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <a href="register.html" class="btn btn-outline btn-sm">
+        <i class="fas fa-user-plus"></i> Register Employee
+      </a>
+      <a href="employee-login.html" class="btn btn-light-blue btn-sm">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="page-container" style="flex: 1;">
+    <section class="hero-section">
+      <div class="hero-pill">
+        <i class="fas fa-shield-alt"></i> Fast • Transparent • Automated
+      </div>
+      <h1>Smart & Seamless <span>Leave Management</span></h1>
+      <p>
+        Welcome to <strong>Sruthi Leave Management</strong>. Easily apply for Casual and Professional leaves, track live approval statuses, and empower HR and administrators with streamlined review tools.
+      </p>
+    </section>
+
+    <!-- Portal Selection Grid -->
+    <section class="portal-selection-grid">
+      <!-- Employee Portal Card -->
+      <div class="portal-card employee">
+        <div>
+          <div class="portal-icon">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <h3>Employee Portal</h3>
+          <p>
+            Log in to submit leave applications, check your leave history, view real-time status updates (Pending, Approved, Rejected), and manage your leave requests.
+          </p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <a href="employee-login.html" class="btn btn-primary" style="width: 100%;">
+            <i class="fas fa-sign-in-alt"></i> Employee Login
+          </a>
+          <a href="register.html" class="btn btn-light-blue" style="width: 100%;">
+            <i class="fas fa-user-plus"></i> New Employee? Sign Up
+          </a>
+        </div>
+      </div>
+
+      <!-- Admin Portal Card -->
+      <div class="portal-card admin">
+        <div>
+          <div class="portal-icon">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <h3>Administrator Portal</h3>
+          <p>
+            Review all employee applications, search by Employee ID, evaluate leave requests, approve or reject applications instantly, and manage records securely.
+          </p>
+        </div>
+        <div>
+          <a href="admin-login.html" class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);">
+            <i class="fas fa-lock"></i> Administrator Login
+          </a>
+          <p style="margin-top: 14px; margin-bottom: 0; font-size: 0.8rem; color: var(--text-muted);">
+            Restricted access for HR and department heads
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Highlights / System Features -->
+    <section style="margin-top: 2rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.6rem; color: var(--dark-heading);">Engineered for Ease & Accuracy</h2>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">Everything you need for full lifecycle leave handling</p>
+      </div>
+
+      <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
+            <i class="fas fa-file-signature"></i>
+          </div>
+          <div class="stat-content" style="text-align: right;">
+            <h4 style="font-size: 1.1rem; color: var(--dark-heading); margin-bottom: 4px;">Casual & Professional</h4>
+            <p>Categorized leave types with custom days and reasons</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-content" style="text-align: right;">
+            <h4 style="font-size: 1.1rem; color: var(--dark-heading); margin-bottom: 4px;">Instant Status</h4>
+            <p>Track Pending, Approved, or Rejected applications</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #dcfce7; color: #16a34a;">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="stat-content" style="text-align: right;">
+            <h4 style="font-size: 1.1rem; color: var(--dark-heading); margin-bottom: 4px;">MySQL Backend</h4>
+            <p>Permanent storage with relational schema in MySQL</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #ede9fe; color: #7c3aed;">
+            <i class="fas fa-user-lock"></i>
+          </div>
+          <div class="stat-content" style="text-align: right;">
+            <h4 style="font-size: 1.1rem; color: var(--dark-heading); margin-bottom: 4px;">Secure Auth</h4>
+            <p>Role-based authentication with password encryption</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Database Status Footer -->
+  <footer class="db-status-bar">
+    <div>
+      <strong>Sruthi Leave Management System</strong> &bull; Node.js Express &bull; MySQL
+    </div>
+    <div class="db-status-badge">
+      <span class="status-dot online" id="dbStatusDot"></span>
+      <span id="dbStatusText">Checking MySQL status...</span>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

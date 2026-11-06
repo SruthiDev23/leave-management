@@ -1,0 +1,46 @@
+[
+  {
+    "application_id": 1,
+    "employee_id": "EMP101",
+    "employee_name": "Rahul Sharma",
+    "leave_type": "Casual",
+    "number_of_days": 2,
+    "description": "Attending family wedding ceremony in hometown.",
+    "application_date": "2026-11-01",
+    "status": "Approved",
+    "created_at": "2026-11-01T09:30:00.000Z"
+  },
+  {
+    "application_id": 2,
+    "employee_id": "EMP102",
+    "employee_name": "Priya Patel",
+    "leave_type": "Professional",
+    "number_of_days": 3,
+    "description": "Attending Node.js and Modern Web Architecture Conference.",
+    "application_date": "2026-11-04",
+    "status": "Pending",
+    "created_at": "2026-11-04T11:15:00.000Z"
+  },
+  {
+    "application_id": 3,
+    "employee_id": "EMP103",
+    "employee_name": "Suresh Kumar",
+    "leave_type": "Casual",
+    "number_of_days": 1,
+    "description": "Urgent personal banking and documentation work.",
+    "application_date": "2026-11-05",
+    "status": "Rejected",
+    "created_at": "2026-11-05T14:00:00.000Z"
+  },
+  {
+    "application_id": 4,
+    "employee_id": "EMP101",
+    "employee_name": "Rahul Sharma",
+    "leave_type": "Professional",
+    "number_of_days": 4,
+    "description": "Attending Cloud DevOps certification training workshop.",
+    "application_date": "2026-11-06",
+    "status": "Pending",
+    "created_at": "2026-11-06T10:00:00.000Z"
+  }
+]

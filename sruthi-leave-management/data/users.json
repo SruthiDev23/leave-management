@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "employee_id": "ADM001",
+    "name": "Admin Sruthi",
+    "email": "admin@sruthi.com",
+    "password": "pbkdf2$sha512$100000$7c2b7a6e1267ffeff1c73e314d591c14$53cb6dba2e6187ca62057f51720d1505426f3a178465460879485b7ad3756470e7e51158a27a0daae6b2b092746300fd003fa96550240e8822a65590d204bca0",
+    "role": "admin",
+    "department": "Administration",
+    "created_at": "2026-10-01T00:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "employee_id": "EMP101",
+    "name": "Rahul Sharma",
+    "email": "rahul@sruthi.com",
+    "password": "pbkdf2$sha512$100000$3f70ef435a942f646073b88c43a6502f$f5f63d58ae42361ec3a563b4902d46f967f7abc80da2ac415093145ce1340beb3e819ec4ca90c6cad15a7037d023b19f03c3529c08f277c51eaefc7460f3fd6c",
+    "role": "employee",
+    "department": "Engineering",
+    "created_at": "2026-10-05T00:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "employee_id": "EMP102",
+    "name": "Priya Patel",
+    "email": "priya@sruthi.com",
+    "password": "pbkdf2$sha512$100000$ed97c64d32014b874c42b1d26ebc004e$5aa47acb22cf9afa43b9f682e130459e21adec2bce22edae4db290a0961aeb908436e2aef36abc226c166aa326bd597be92113e149c5b0c8a1012e697f23127a",
+    "role": "employee",
+    "department": "Design",
+    "created_at": "2026-10-10T00:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "employee_id": "EMP103",
+    "name": "Suresh Kumar",
+    "email": "suresh@sruthi.com",
+    "password": "pbkdf2$sha512$100000$5c8a87e2368b884e06734a7f7d341025$b1b979f3aa9e5aaf97e413842f54b0a2a104d214d5138958db8fe2b615b1259dbfd82815bbc7f3182a461e8e53fe436bfebcac75d197cffeb3048dd83912a626",
+    "role": "employee",
+    "department": "Marketing",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  }
+]

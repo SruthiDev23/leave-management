@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Sruthi Leave Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-wrapper" style="background: radial-gradient(circle at top right, #e0e7ff 0%, #f8fafc 60%);">
+
+  <div class="auth-card" style="border-top-color: #1e3a8a;">
+    <div class="auth-header">
+      <div class="auth-logo" style="background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);">
+        <i class="fas fa-user-shield"></i>
+      </div>
+      <h2>Administrator Login</h2>
+      <p>Authorized access to leave approvals & records</p>
+    </div>
+
+    <!-- Quick Demo Credential Helper -->
+    <div class="demo-account-box" style="border-color: #93c5fd; background: #eff6ff;">
+      <div>
+        <i class="fas fa-key" style="color: #1e3a8a; margin-right: 4px;"></i>
+        Admin Demo: <code>ADM001</code> / <code>admin123</code>
+      </div>
+      <button type="button" class="btn btn-light-blue btn-sm" id="fillDemoBtn" style="padding: 2px 8px; font-size: 0.75rem;">
+        Autofill
+      </button>
+    </div>
+
+    <!-- Alert placeholder -->
+    <div id="alertBox" style="display: none;"></div>
+
+    <!-- Admin Login Form -->
+    <form id="adminLoginForm">
+      <div class="form-group">
+        <label class="form-label" for="identifier">
+          Admin Employee ID or Email <span class="required">*</span>
+        </label>
+        <div class="search-input-wrapper">
+          <i class="fas fa-user-lock"></i>
+          <input 
+            type="text" 
+            id="identifier" 
+            class="form-control" 
+            placeholder="e.g. ADM001 or admin@sruthi.com" 
+            required 
+            autocomplete="username"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">
+          Password <span class="required">*</span>
+        </label>
+        <div class="search-input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input 
+            type="password" 
+            id="password" 
+            class="form-control" 
+            placeholder="Enter admin password" 
+            required 
+            autocomplete="current-password"
+          >
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="loginBtn" style="width: 100%; margin-top: 0.5rem; padding: 0.8rem; background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);">
+        <i class="fas fa-lock-open"></i> Login to Admin Console
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>
+        <i class="fas fa-user-tie" style="color: var(--primary);"></i>
+        Are you an Employee? <a href="employee-login.html">Employee Login</a>
+      </p>
+      <p style="margin-top: 12px;">
+        <a href="index.html" style="color: var(--text-muted);"><i class="fas fa-arrow-left"></i> Back to Home</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    Auth.redirectIfAuthenticated();
+
+    const form = document.getElementById('adminLoginForm');
+    const alertBox = document.getElementById('alertBox');
+    const fillDemoBtn = document.getElementById('fillDemoBtn');
+
+    fillDemoBtn.addEventListener('click', () => {
+      document.getElementById('identifier').value = 'ADM001';
+      document.getElementById('password').value = 'admin123';
+      showToast('Admin demo credentials filled!', 'info');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.style.display = 'none';
+
+      const identifier = document.getElementById('identifier').value.trim();
+      const password = document.getElementById('password').value;
+      const submitBtn = document.getElementById('loginBtn');
+
+      if (!identifier || !password) {
+        showAlert('Please provide both Admin ID and Password.', 'danger');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying Admin Access...';
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier, password, expectedRole: 'admin' })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          Auth.setSession(data.token, data.user);
+          showAlert('Authentication approved! Opening Admin Dashboard...', 'success');
+          showToast(`Welcome Administrator ${data.user.name}`, 'success');
+
+          setTimeout(() => {
+            window.location.href = 'admin-dashboard.html';
+          }, 800);
+        } else {
+          showAlert(data.message || 'Admin login failed. Please verify credentials.', 'danger');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-lock-open"></i> Login to Admin Console';
+        }
+      } catch (err) {
+        showAlert('Unable to reach server. Please ensure Node.js is running.', 'danger');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-lock-open"></i> Login to Admin Console';
+      }
+    });
+
+    function showAlert(message, type) {
+      alertBox.className = `alert alert-${type}`;
+      alertBox.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> <div>${message}</div>`;
+      alertBox.style.display = 'flex';
+    }
+  </script>
+</body>
+</html>

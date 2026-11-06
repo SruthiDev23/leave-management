@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Dashboard - Sruthi Leave Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="employee-dashboard.html" class="brand-wrapper">
+      <div class="brand-icon">
+        <i class="fas fa-calendar-check"></i>
+      </div>
+      <div class="brand-text">
+        <h1>Sruthi Leave Management</h1>
+        <p>Employee Portal</p>
+      </div>
+    </a>
+    
+    <div class="nav-actions">
+      <div class="user-badge">
+        <div class="user-avatar" id="navUserAvatar">EM</div>
+        <div class="user-info">
+          <span class="user-name" id="navUserName">Loading User...</span>
+          <span class="user-role-badge" id="navUserRole">Employee</span>
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="Auth.logout()" title="Sign Out">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="page-container" style="flex: 1;">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-title">
+        <h2>Employee Dashboard</h2>
+        <p>Submit new leave requests and track your application approval status</p>
+      </div>
+      <div>
+        <button class="btn btn-light-blue btn-sm" onclick="loadEmployeeData()">
+          <i class="fas fa-sync-alt"></i> Refresh Data
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. Dashboard Stat Cards (Total, Pending, Approved, Rejected) -->
+    <section class="stats-grid">
+      <div class="stat-card card-total">
+        <div class="stat-content">
+          <h3 id="statTotal">0</h3>
+          <p>Total Applications</p>
+        </div>
+        <div class="stat-icon">
+          <i class="fas fa-folder-open"></i>
+        </div>
+      </div>
+
+      <div class="stat-card card-pending">
+        <div class="stat-content">
+          <h3 id="statPending">0</h3>
+          <p>Pending Applications</p>
+        </div>
+        <div class="stat-icon">
+          <i class="fas fa-clock"></i>
+        </div>
+      </div>
+
+      <div class="stat-card card-approved">
+        <div class="stat-content">
+          <h3 id="statApproved">0</h3>
+          <p>Approved Applications</p>
+        </div>
+        <div class="stat-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+      </div>
+
+      <div class="stat-card card-rejected">
+        <div class="stat-content">
+          <h3 id="statRejected">0</h3>
+          <p>Rejected Applications</p>
+        </div>
+        <div class="stat-icon">
+          <i class="fas fa-times-circle"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Two Column Grid: Leave Form & Applications Table -->
+    <div class="dashboard-grid with-form">
+      
+      <!-- Left Column: Leave Application Form -->
+      <section class="content-card">
+        <div class="content-card-header">
+          <div class="content-card-title">
+            <i class="fas fa-file-signature"></i>
+            <h3>Apply for Leave</h3>
+          </div>
+        </div>
+
+        <!-- Success/Error Message Container -->
+        <div id="formAlertBox" style="display: none;"></div>
+
+        <form id="leaveApplicationForm">
+          <!-- 1. Employee ID -->
+          <div class="form-group">
+            <label class="form-label" for="employee_id">
+              1. Employee ID <span class="required">*</span>
+            </label>
+            <div class="search-input-wrapper">
+              <i class="fas fa-id-badge"></i>
+              <input 
+                type="text" 
+                id="employee_id" 
+                name="employee_id" 
+                class="form-control" 
+                readonly 
+                required
+              >
+            </div>
+            <div class="form-hint">Auto-detected from active employee session</div>
+          </div>
+
+          <!-- 2. Employee Name -->
+          <div class="form-group">
+            <label class="form-label" for="employee_name">
+              2. Employee Name <span class="required">*</span>
+            </label>
+            <div class="search-input-wrapper">
+              <i class="fas fa-user"></i>
+              <input 
+                type="text" 
+                id="employee_name" 
+                name="employee_name" 
+                class="form-control" 
+                readonly 
+                required
+              >
+            </div>
+          </div>
+
+          <!-- 3. Leave Type (Dropdown: Casual, Professional) -->
+          <div class="form-group">
+            <label class="form-label" for="leave_type">
+              3. Leave Type <span class="required">*</span>
+            </label>
+            <select id="leave_type" name="leave_type" class="form-control" required>
+              <option value="" disabled selected>-- Select Leave Type --</option>
+              <option value="Casual">Casual Leave (Personal / Family)</option>
+              <option value="Professional">Professional Leave (Training / Conference)</option>
+            </select>
+          </div>
+
+          <!-- 4. Number of Days -->
+          <div class="form-group">
+            <label class="form-label" for="number_of_days">
+              4. Number of Days <span class="required">*</span>
+            </label>
+            <div class="search-input-wrapper">
+              <i class="fas fa-calendar-day"></i>
+              <input 
+                type="number" 
+                id="number_of_days" 
+                name="number_of_days" 
+                class="form-control" 
+                placeholder="e.g. 2" 
+                min="1" 
+                max="90" 
+                required
+              >
+            </div>
+          </div>
+
+          <!-- 5. Description (Reason for leave) -->
+          <div class="form-group">
+            <label class="form-label" for="description">
+              5. Description (Reason for leave) <span class="required">*</span>
+            </label>
+            <textarea 
+              id="description" 
+              name="description" 
+              class="form-control" 
+              placeholder="State the clear reason or circumstances for requesting this leave..." 
+              required
+            ></textarea>
+          </div>
+
+          <!-- Submit Leave button -->
+          <button type="submit" class="btn btn-primary" id="submitLeaveBtn" style="width: 100%; padding: 0.85rem;">
+            <i class="fas fa-paper-plane"></i> Submit Leave Application
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Column: Leave Applications Table -->
+      <section class="content-card">
+        <div class="content-card-header">
+          <div class="content-card-title">
+            <i class="fas fa-list-alt"></i>
+            <h3>My Leave Applications</h3>
+          </div>
+
+          <!-- Filter Pills (All, Pending, Approved, Rejected) -->
+          <div class="filter-pills">
+            <button class="filter-pill active" data-filter="All" onclick="filterApplications('All')">All</button>
+            <button class="filter-pill" data-filter="Pending" onclick="filterApplications('Pending')">Pending</button>
+            <button class="filter-pill" data-filter="Approved" onclick="filterApplications('Approved')">Approved</button>
+            <button class="filter-pill" data-filter="Rejected" onclick="filterApplications('Rejected')">Rejected</button>
+          </div>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="table-responsive">
+          <table class="custom-table" id="leavesTable">
+            <thead>
+              <tr>
+                <th>App ID</th>
+                <th>Leave Type</th>
+                <th>Days</th>
+                <th>Reason / Description</th>
+                <th>Applied Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="leavesTableBody">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 2.5rem;">
+                  <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--primary);"></i>
+                  <p style="margin-top: 8px; color: var(--text-secondary);">Loading your leave applications...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Database Status Footer -->
+  <footer class="db-status-bar">
+    <div>
+      <strong>Sruthi Leave Management System</strong> &bull; Employee Portal &bull; MySQL Database
+    </div>
+    <div class="db-status-badge">
+      <span class="status-dot online" id="dbStatusDot"></span>
+      <span id="dbStatusText">Checking MySQL status...</span>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/employee.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Login - Sruthi Leave Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-wrapper">
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <i class="fas fa-user-tie"></i>
+      </div>
+      <h2>Employee Login</h2>
+      <p>Enter your credentials to access your leave portal</p>
+    </div>
+
+    <!-- Quick Demo Credential Helper -->
+    <div class="demo-account-box">
+      <div>
+        <i class="fas fa-key" style="color: var(--primary); margin-right: 4px;"></i>
+        Demo: <code>EMP101</code> / <code>emp123</code>
+      </div>
+      <button type="button" class="btn btn-light-blue btn-sm" id="fillDemoBtn" style="padding: 2px 8px; font-size: 0.75rem;">
+        Autofill
+      </button>
+    </div>
+
+    <!-- Alert placeholder -->
+    <div id="alertBox" style="display: none;"></div>
+
+    <!-- Employee Login Form -->
+    <form id="employeeLoginForm">
+      <div class="form-group">
+        <label class="form-label" for="identifier">
+          Employee ID or Email <span class="required">*</span>
+        </label>
+        <div class="search-input-wrapper">
+          <i class="fas fa-id-badge"></i>
+          <input 
+            type="text" 
+            id="identifier" 
+            class="form-control" 
+            placeholder="e.g. EMP101 or rahul@sruthi.com" 
+            required 
+            autocomplete="username"
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">
+          Password <span class="required">*</span>
+        </label>
+        <div class="search-input-wrapper">
+          <i class="fas fa-lock"></i>
+          <input 
+            type="password" 
+            id="password" 
+            class="form-control" 
+            placeholder="Enter your password" 
+            required 
+            autocomplete="current-password"
+          >
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="loginBtn" style="width: 100%; margin-top: 0.5rem; padding: 0.8rem;">
+        <i class="fas fa-sign-in-alt"></i> Sign In to Portal
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>New employee? <a href="register.html">Register an account</a></p>
+      <p style="margin-top: 8px;">
+        <i class="fas fa-user-shield" style="color: var(--primary);"></i>
+        Are you an Administrator? <a href="admin-login.html">Admin Login</a>
+      </p>
+      <p style="margin-top: 12px;">
+        <a href="index.html" style="color: var(--text-muted);"><i class="fas fa-arrow-left"></i> Back to Home</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    // Redirect if already logged in
+    Auth.redirectIfAuthenticated();
+
+    const form = document.getElementById('employeeLoginForm');
+    const alertBox = document.getElementById('alertBox');
+    const fillDemoBtn = document.getElementById('fillDemoBtn');
+
+    fillDemoBtn.addEventListener('click', () => {
+      document.getElementById('identifier').value = 'EMP101';
+      document.getElementById('password').value = 'emp123';
+      showToast('Demo employee credentials filled!', 'info');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.style.display = 'none';
+
+      const identifier = document.getElementById('identifier').value.trim();
+      const password = document.getElementById('password').value;
+      const submitBtn = document.getElementById('loginBtn');
+
+      if (!identifier || !password) {
+        showAlert('Please provide both Employee ID and Password.', 'danger');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier, password, expectedRole: 'employee' })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          Auth.setSession(data.token, data.user);
+          showAlert('Login successful! Redirecting to dashboard...', 'success');
+          showToast(`Welcome back, ${data.user.name}!`, 'success');
+
+          setTimeout(() => {
+            window.location.href = data.user.role === 'admin' ? 'admin-dashboard.html' : 'employee-dashboard.html';
+          }, 800);
+        } else {
+          showAlert(data.message || 'Login failed. Please verify your credentials.', 'danger');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In to Portal';
+        }
+      } catch (err) {
+        showAlert('Unable to reach the server. Please ensure Node.js server is running.', 'danger');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In to Portal';
+      }
+    });
+
+    function showAlert(message, type) {
+      alertBox.className = `alert alert-${type}`;
+      alertBox.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> <div>${message}</div>`;
+      alertBox.style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
